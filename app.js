@@ -1,5 +1,6 @@
 const Line = require("@line/bot-sdk");
 const express = require("express");
+const modelGBF = require("./model");
 
 const port = process.env.PORT || 3000;
 const config = {
@@ -17,14 +18,25 @@ const eventHandler = (event) => {
     return Promise.resolve(null);
   }
 
-  // create echo message for replying
-  const replyMessage = {
-    type: "text",
-    text: event.message.text,
-  };
+  const messageText = event.message.text;
+  if (!messageText.split("").includes("超")) {
+    return Promise.resolve(null);
+  }
 
-  // use client API to reply message
-  return lineClinet.replyMessage(event.replyToken, replyMessage);
+  modelGBF.getItemURL().then((url) => {
+    const thumbnail = url.replace(".png", "t.png");
+
+    // create echo message for replying
+    const replyMessage = {
+      type: "image",
+      originalContentUrl: url,
+      previewImageUrl: thumbnail,
+    };
+
+    // use client API to reply message
+    return lineClinet.replyMessage(event.replyToken, replyMessage);
+  });
+  return Promise.resolve(null);
 };
 
 // webhook entry point
@@ -45,6 +57,11 @@ app.get("/", (req, res) => {
   res.send("Welcome GBF-Gacha-BOT Webhook API");
 });
 
-app.listen(port, () => {
-  console.log(`Listening on ${port}`);
-});
+const startup = async () => {
+  await modelGBF.setup();
+  app.listen(port, () => {
+    console.log(`Listening on ${port}`);
+  });
+};
+
+startup();
