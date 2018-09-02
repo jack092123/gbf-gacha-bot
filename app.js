@@ -40,6 +40,11 @@ app.post("/webhook", Line.middleware(config), (req, res) => {
     });
 });
 
+// welcome message
+app.get("/", (req, res) => {
+  res.send("Welcome GBF-Gacha-BOT Webhook API");
+});
+
 app.listen(port, () => {
   console.log(`Listening on ${port}`);
 });
