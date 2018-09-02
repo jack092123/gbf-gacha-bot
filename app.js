@@ -13,7 +13,7 @@ const lineClinet = new Line.Client(config);
 const app = express();
 
 // message event handler
-const eventHandler = (event) => {
+const eventHandler = async (event) => {
   if (event.type !== "message" || event.message.type !== "text") {
     return Promise.resolve(null);
   }
@@ -23,7 +23,8 @@ const eventHandler = (event) => {
     return Promise.resolve(null);
   }
 
-  modelGBF.getItemURL().then((url) => {
+  try {
+    const url = await modelGBF.getItemURL();
     const thumbnail = url.replace(".png", "t.png");
 
     // create echo message for replying
@@ -35,8 +36,10 @@ const eventHandler = (event) => {
 
     // use client API to reply message
     return lineClinet.replyMessage(event.replyToken, replyMessage);
-  });
-  return Promise.resolve(null);
+  } catch (error) {
+    console.error(`getItemURL error: ${error}`);
+    return Promise.resolve(null);
+  }
 };
 
 // webhook entry point
