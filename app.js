@@ -19,7 +19,7 @@ const eventHandler = async (event) => {
   }
 
   const messageText = event.message.text;
-  if (!messageText.split("").includes("超")) {
+  if (!messageText.match(/超得/g)) {
     return Promise.resolve(null);
   }
 
