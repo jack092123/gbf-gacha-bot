@@ -1,6 +1,6 @@
 {
   "name": "gbf-gacha-bot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "line-bot api for Granblue-Fantasy's gacha",
   "main": "app.js",
   "scripts": {
